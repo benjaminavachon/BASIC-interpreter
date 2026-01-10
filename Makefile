@@ -4,7 +4,7 @@ OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 
 run: clean default
 	#./$(TARGET)
-	./$(TARGET) test.bas
+	./$(TARGET) test-print.bas
 
 default: $(TARGET)
 

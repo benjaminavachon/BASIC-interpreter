@@ -150,14 +150,14 @@ Line parseLine(char* line)
         }
         else if(line[i] == '(')
         {
-            addToken(&l,newToken(PAREN_OPEN,"(",0));
+            addToken(&l,newToken(TOK_LPAREN,"(",0));
             i++;
             continue;
         }
 
         else if(line[i] == ')')
         {
-            addToken(&l,newToken(PAREN_CLOSE,")",0));
+            addToken(&l,newToken(TOK_RPAREN,")",0));
             i++;
             continue;
         }

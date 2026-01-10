@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <string.h>
+#include <stdlib.h>
 
 typedef enum {
     TOK_EOF,
@@ -33,8 +34,8 @@ typedef enum {
     OP_LTE,
     OP_GTE,
 
-    PAREN_OPEN,
-    PAREN_CLOSE,
+    TOK_LPAREN,
+    TOK_RPAREN,
     COMMA,
     SEMICOLON,
     COLON,

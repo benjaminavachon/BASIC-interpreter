@@ -4,6 +4,7 @@
 #include "token.h"
 #include "lexer.h"
 #include "debug.h"
+#include "interpreter.h"
 
 int main(int argv, char* argc[])
 {
@@ -26,8 +27,12 @@ int main(int argv, char* argc[])
         return -1;
     }
 
-    LineArray array = scanFile(file); 
-    printArray(&array);
+    //create array of lines/tokens
+    LineArray array = scanFile(file);
+      
+    //execute tokens
+    interpretArray(&array);
+    //printArray(&array);
 
     return 0;
 }
