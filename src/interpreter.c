@@ -52,7 +52,56 @@ void handleLet(Line* line, int* vars)
     vars[variable - 'A'] = value;
 }
 
-void handleIf(Line* line, int* pc,int* vars,LineArray* array) {}
+void handleIf(Line* line, int* pc, int* vars, LineArray* array)
+{
+    int i = 2;   // token index after IF
+
+    // left expression
+    int left = evalExpression(line, &i, vars);
+
+    // relational operator
+    Token op = line->tokens[i];
+    i++;
+
+    // right expression
+    int right = evalExpression(line, &i, vars);
+
+    // THEN keyword
+    if (line->tokens[i].type != KW_THEN) {
+        printf("Syntax error: expected THEN\n");
+        exit(1);
+    }
+    i++;
+
+    // target line number
+    int targetLine = line->tokens[line->count-1].intValue;
+    int idx = findLineIndex(array, targetLine);
+
+    if (idx < 0) {
+        printf("IF THEN jump to non-existent line %d\n", targetLine);
+        exit(1);
+    }
+
+    // evaluate condition
+    int condition = 0;
+    switch (op.type) {
+        case OP_LT: condition = (left < right); break;
+        case OP_GT: condition = (left > right); break;
+        case OP_EQ: condition = (left == right); break;
+        case OP_NEQ: condition = (left != right); break;
+        case OP_LTE: condition = (left <= right); break;
+        case OP_GTE: condition = (left >= right); break;
+    }
+
+    if (condition) {
+        *pc = idx;
+        return;   // IMPORTANT
+    }
+
+    // false → fall through
+}
+
+
 void handleGoto(Line* line, int* pc,LineArray* array) 
 {
     
@@ -106,7 +155,28 @@ void handleRETURN(int* pc, int* gosubStack, int* sp)
     *pc = gosubStack[*sp];
 }
 void handleRem(Line* line, int* vars) {}
-void handleInput(Line* line, int* vars) {}
+void handleInput(Line* line, int* vars) 
+{
+    int i = 2;
+
+    if(!isalpha(line->tokens[i].literal[0]))
+    {
+        printf("variables can only be single letters A-Z!\n");
+        exit(1);
+    }
+
+    char variable = toupper(line->tokens[i].literal[0]);
+    if (variable < 'A' || variable > 'Z') 
+    { 
+        printf("variables must be A-Z\n"); 
+        exit(1);
+    }
+
+    int value;
+    scanf("%i",&value);
+
+    vars[variable - 'A'] = value;    
+}
 
 void handlePrint(Line* line, int* vars)
 {
@@ -121,7 +191,11 @@ void handlePrint(Line* line, int* vars)
                 printf("%s",t.literal);
                 i++;
                 break;
-            case SEMICOLON: hasNewline = 0;i++;break;
+            case SEMICOLON: 
+                if(i == line->count-1)
+                {
+                    hasNewline = 0;i++;break;
+                }
             case COMMA: 
                 printf(" ");
                 i++;

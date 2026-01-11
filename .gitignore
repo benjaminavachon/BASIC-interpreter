@@ -1,0 +1,5 @@
+/bin/*
+/obj/*
+Makefile
+test.bas
+test-print.bas
